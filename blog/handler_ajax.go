@@ -13,9 +13,9 @@ import (
 
 	"regexp"
 
-	"github.com/cihub/seelog"
 	"github.com/dchest/captcha"
 	"github.com/gorilla/mux"
+	"github.com/ngaut/log"
 )
 
 type AjaxResult struct {
@@ -761,7 +761,7 @@ func ajaxHandler(ctx *RequestContext) {
 			}
 
 			url := ctx.r.Form.Get("uri")
-			seelog.Debugf("reply_add url %s", url)
+			log.Debugf("reply_add url %s", url)
 			var article *ProjectArticleItem
 			// Check if url is valid, maybe project article or guestbook
 			selfComment := false
@@ -848,10 +848,10 @@ func ajaxHandler(ctx *RequestContext) {
 				if 0 != receiverUid {
 					err = modelMessageNew(receiverUid, MessageTypeComment, comment, url, user, int(replyID))
 					if nil != err {
-						seelog.Errorf("Add comment message error:%s", err.Error())
+						log.Errorf("Add comment message error:%s", err.Error())
 					}
 				} else {
-					seelog.Errorf("Get receiver uid failed, url %s", url)
+					log.Errorf("Get receiver uid failed, url %s", url)
 				}
 			}
 			// Find all people mentioned
@@ -868,9 +868,9 @@ func ajaxHandler(ctx *RequestContext) {
 							continue
 						}
 						if err = modelMessageNew(atUser.Uid, MessageTypeReply, "", url, user, int(replyID)); nil != err {
-							seelog.Errorf("Add reply message error:%s", err.Error())
+							log.Errorf("Add reply message error:%s", err.Error())
 						}
-						seelog.Debugf("Add reply message for user %s success", username)
+						log.Debugf("Add reply message for user %s success", username)
 					}
 				}
 			}
@@ -896,7 +896,7 @@ func ajaxHandler(ctx *RequestContext) {
 				result.Msg = err.Error()
 				return
 			}
-			seelog.Debug(replyID)
+			log.Debug(replyID)
 			if err = modelReplyDelete(replyID); nil != err {
 				result.Msg = err.Error()
 				return
@@ -951,13 +951,13 @@ func ajaxHandler(ctx *RequestContext) {
 					}
 					articleId, err := strconv.Atoi(substrs[1])
 					if nil != err {
-						seelog.Error("Fetch url articleid error:", err)
+						log.Error("Fetch url articleid error:", err)
 						m.Title = "N/A"
 						continue
 					}
 					article, err := modelProjectArticleGet(articleId)
 					if nil != err {
-						seelog.Errorf("Get article %d error:%s", articleId, err.Error())
+						log.Errorf("Get article %d error:%s", articleId, err.Error())
 						m.Title = "N/A"
 						continue
 					}
@@ -1048,7 +1048,7 @@ func ajaxHandler(ctx *RequestContext) {
 			// 	}
 			// }
 
-			seelog.Infof("Request to create order, account=%v, value=%v, pm=%v, debug=%v",
+			log.Infof("Request to create order, account=%v, value=%v, pm=%v, debug=%v",
 				donateAccount, donateValue, payMethod, ctx.config.Debug)
 			orderInfo, err := createDonateOrder(donateAccount, donateValue, payMethod, ctx.config.Debug)
 			if nil != err {
@@ -1074,7 +1074,7 @@ func ajaxHandler(ctx *RequestContext) {
 			orderInfo.PpayURL = ctx.config.Ppay.PayURL
 
 			// Append a iframe into front
-			seelog.Info("Order info ", orderInfo)
+			log.Info("Order info ", orderInfo)
 			jsonBytes, _ := json.Marshal(orderInfo)
 			result.Result = 0
 			result.Msg = string(jsonBytes)
@@ -1088,7 +1088,7 @@ func ajaxHandler(ctx *RequestContext) {
 			apikey := getFormValueAllMethod(ctx.r, "apikey")
 			totalStr := getFormValueAllMethod(ctx.r, "total")
 			uid := getFormValueAllMethod(ctx.r, "uid")
-			seelog.Infof("Confirm order with orderID %s, apikey %s, total %s, uid %s", orderID, apikey, totalStr, uid)
+			log.Infof("Confirm order with orderID %s, apikey %s, total %s, uid %s", orderID, apikey, totalStr, uid)
 
 			if "" == orderID {
 				result.Msg = "Invalid order id"
@@ -1119,10 +1119,10 @@ func ajaxHandler(ctx *RequestContext) {
 			err = confirmDonateOrder(uid, orderID, apikey, totalF)
 			if nil != err {
 				result.Msg = err.Error()
-				seelog.Errorf("Confirm failed by remote server, error = %v", err)
+				log.Errorf("Confirm failed by remote server, error = %v", err)
 				return
 			}
-			seelog.Infof("Confirm done by remote server, order id = %v", orderID)
+			log.Infof("Confirm done by remote server, order id = %v", orderID)
 
 			autoRender = false
 			ctx.w.Write(successData)
@@ -1136,7 +1136,7 @@ func ajaxHandler(ctx *RequestContext) {
 			//typ := getFormValueAllMethod(ctx.r, "type")
 			totalStr := getFormValueAllMethod(ctx.r, "price")
 			uid := getFormValueAllMethod(ctx.r, "param")
-			seelog.Infof("Confirm order with orderID %s, total %s, uid %s", payID, totalStr, uid)
+			log.Infof("Confirm order with orderID %s, total %s, uid %s", payID, totalStr, uid)
 
 			if "" == payID {
 				result.Msg = "Invalid order id"
@@ -1172,10 +1172,10 @@ func ajaxHandler(ctx *RequestContext) {
 			err = confirmDonateOrder(uid, payID, realMd5, totalF)
 			if nil != err {
 				result.Msg = err.Error()
-				seelog.Errorf("Confirm failed by remote server, error = %v", err)
+				log.Errorf("Confirm failed by remote server, error = %v", err)
 				return
 			}
-			seelog.Infof("Confirm done by remote server, order id = %v", payID)
+			log.Infof("Confirm done by remote server, order id = %v", payID)
 
 			autoRender = false
 			ctx.w.Write(successData)

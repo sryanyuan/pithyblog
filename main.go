@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"os"
 
 	"os/exec"
@@ -9,24 +8,9 @@ import (
 
 	"fmt"
 
-	"github.com/cihub/seelog"
+	"github.com/ngaut/log"
 	"github.com/spf13/cobra"
 	"github.com/sryanyuan/pithyblog/blog"
-)
-
-// Default log config
-const (
-	defaultLogSetting = `
-	<seelog minlevel="info">
-    	<outputs formatid="main">
-			<rollingfile namemode="postfix" type="date" filename="log/app.log" datepattern="060102" maxrolls="30"/>
-       		<console />
-    	</outputs>
-    	<formats>
-        	<format id="main" format="%Date/%Time [%LEV] %Msg (%File:%Line %FuncShort)%n"/>
-    	</formats>
-	</seelog>
-	`
 )
 
 var (
@@ -119,32 +103,24 @@ func siteRunFunc(cmd *cobra.Command, args []string) {
 		return
 	}
 
+	if config.Debug {
+		log.SetLevelByString("debug")
+	} else {
+		log.SetLevelByString("info")
+	}
+
 	// Clean up
 	defer func() {
 		e := recover()
 		if nil != e {
-			seelog.Error("Main routine quit with error:", e)
+			log.Error("Main routine quit with error:", e)
 		} else {
-			seelog.Info("Main routine quit normally")
+			log.Info("Main routine quit normally")
 		}
-
-		seelog.Flush()
 	}()
-
-	// Initialize log
-	logger, err := seelog.LoggerFromConfigAsFile(getModulePath() + "/static/conf/log.conf")
-	if nil == logger {
-		// Using default log config
-		logger, err = seelog.LoggerFromConfigAsString(defaultLogSetting)
-		if nil != err {
-			log.Println("Failed to initialize log module, error:", err)
-			os.Exit(1)
-		}
-	}
-	seelog.ReplaceLogger(logger)
 
 	site := blog.NewSite(config)
 	if err = site.Start(); nil != err {
-		seelog.Error("Blog start error:", err)
+		log.Error("Blog start error:", err)
 	}
 }

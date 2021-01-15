@@ -10,11 +10,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cihub/seelog"
 	"github.com/dchest/captcha"
 	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
+	"github.com/ngaut/log"
 )
 
 /*
@@ -204,7 +204,7 @@ var defaultOKRsp APIRsp
 
 func (c *RequestContext) WriteAPIRsp(header int, rsp *APIRsp) error {
 	if header != http.StatusOK {
-		seelog.Debugf("Rsp status bad with msg: %v", rsp)
+		log.Debugf("Rsp status bad with msg: %v", rsp)
 	}
 	if nil == rsp {
 		rsp = &defaultOKRsp
@@ -350,7 +350,7 @@ func wrapHandler(config *AppConfig, item *RouterItem) http.HandlerFunc {
 			return
 		}
 
-		seelog.Debug("Request url : ", r.URL)
+		log.Debug("Request url : ", r.URL)
 
 		requestCtx.user = user
 		item.Handler(&requestCtx)
@@ -567,7 +567,7 @@ func InitRouters(config *AppConfig, r *mux.Router) {
 	//	handle func
 	routersCount := len(routerItems)
 	for i := 0; i < routersCount; i++ {
-		seelog.Debugf("Register router path %s, permission %d", routerItems[i].Url, routerItems[i].Permission)
+		log.Debugf("Register router path %s, permission %d", routerItems[i].Url, routerItems[i].Permission)
 		rt := r.HandleFunc(routerItems[i].Url, wrapHandler(config, &routerItems[i]))
 		if nil != routerItems[i].Methods && 0 != len(routerItems[i].Methods) {
 			rt.Methods(routerItems[i].Methods...)

@@ -9,6 +9,10 @@ import (
 	"github.com/go-validator/validator"
 )
 
+var (
+	configPath string
+)
+
 type CDNConfig struct {
 	JQueryJS            string `json:"jquery-js" toml:"jquery-js"`
 	JQueryCSS           string `json:"jquery-css" toml:"jquery-css"`
@@ -56,6 +60,8 @@ type AppConfig struct {
 
 // ReadJSONConfig returns config object loading from json format config file
 func ReadJSONConfig(filename string) (*AppConfig, error) {
+	configPath = filename
+
 	f, err := os.Open(filename)
 	if nil != err {
 		return nil, err
@@ -77,6 +83,8 @@ func ReadJSONConfig(filename string) (*AppConfig, error) {
 
 // ReadTOMLConfig returns config object loading from toml format config file
 func ReadTOMLConfig(filename string) (*AppConfig, error) {
+	configPath = filename
+
 	var config AppConfig
 	config.Debug = true
 	if _, err := toml.DecodeFile(filename, &config); nil != err {

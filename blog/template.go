@@ -15,7 +15,7 @@ import (
 
 	"sync"
 
-	"github.com/cihub/seelog"
+	"github.com/ngaut/log"
 	"github.com/russross/blackfriday"
 )
 
@@ -103,7 +103,7 @@ func tplfn_getTimeGapString(tm int64) string {
 	// Get timezone
 	tz, err := time.LoadLocation(siteTimezone)
 	if nil != err {
-		seelog.Error("Load localtion failed, timezone:", siteTimezone)
+		log.Error("Load localtion failed, timezone:", siteTimezone)
 		return t.Format("2006-01-02 15:04")
 	}
 	return t.In(tz).Format("2006-01-02 15:04")
@@ -256,7 +256,7 @@ func tplfn_readFileData(path string) template.HTML {
 	fileBytes, err := ioutil.ReadAll(f)
 	if nil != err {
 		errMsg := fmt.Sprintf("Read file data error, file=%s, error=%s", path, err.Error())
-		seelog.Error(errMsg)
+		log.Error(errMsg)
 		return template.HTML(errMsg)
 	}
 
@@ -279,7 +279,7 @@ func tplfn_readMarkdownFileData(path string) template.HTML {
 	fileBytes, err := rawReadFileData(path)
 	if nil != err {
 		errMsg := fmt.Sprintf("Read file data error, file=%s, error=%s", path, err.Error())
-		seelog.Error(errMsg)
+		log.Error(errMsg)
 		return template.HTML(errMsg)
 	}
 

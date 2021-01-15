@@ -3,7 +3,7 @@ package blog
 import (
 	"time"
 
-	"github.com/cihub/seelog"
+	"github.com/ngaut/log"
 )
 
 const (
@@ -62,7 +62,7 @@ func getCommentsMergedByURI(uri string, user *WebUser) (*apiArticleCommentsRsp, 
 		}
 		topComment, ok := commentMap[comment.SubRefId]
 		if !ok || nil == topComment {
-			seelog.Errorf("Can't find parent comment while finding sub comment %d 's parent", comment.SubRefId)
+			log.Errorf("Can't find parent comment while finding sub comment %d 's parent", comment.SubRefId)
 			continue
 		}
 		var subComment apiArticleCommentRsp

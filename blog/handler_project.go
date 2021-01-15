@@ -9,9 +9,9 @@ import (
 
 	"io/ioutil"
 
-	"github.com/cihub/seelog"
 	"github.com/dchest/captcha"
 	"github.com/gorilla/mux"
+	"github.com/ngaut/log"
 )
 
 var projectCategoryRenderTpls = []string{
@@ -149,7 +149,7 @@ func projectArticleHandler(ctx *RequestContext) {
 			return
 		}
 		if err = markMessageURLRead(ctx.user, messageID, ctx.r.URL.Path); nil != err {
-			seelog.Error(err)
+			log.Error(err)
 		} else {
 			modelMessageDelete(messageID)
 		}
@@ -286,7 +286,7 @@ func projectArticleReplyHandler(ctx *RequestContext) {
 	articleID, err := strconv.Atoi(vars["articleid"])
 
 	if nil != err {
-		seelog.Debug(err)
+		log.Debug(err)
 		ctx.Redirect("/", http.StatusNotFound)
 		return
 	}
@@ -294,17 +294,17 @@ func projectArticleReplyHandler(ctx *RequestContext) {
 	// Read reply body
 	bodyBytes, err := ioutil.ReadAll(ctx.r.Body)
 	if nil != err {
-		seelog.Debug(err)
+		log.Debug(err)
 		ctx.WriteResponse([]byte(err.Error()))
 		return
 	}
 
 	// Is use logined ?
 	if ctx.user.Uid == 0 {
-		seelog.Debug("sign in")
+		log.Debug("sign in")
 		ctx.Redirect("/signin", http.StatusContinue)
 		return
 	}
 
-	seelog.Debug(string(bodyBytes), articleID)
+	log.Debug(string(bodyBytes), articleID)
 }

@@ -18,3 +18,5 @@ debug
 *.dev.html
 debug.test
 view/
+/.vscode/
+/sitedata-pack/

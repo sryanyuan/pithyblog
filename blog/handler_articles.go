@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/cihub/seelog"
+	"github.com/ngaut/log"
 )
 
 var articlesRenderTpls = []string{
@@ -82,7 +82,7 @@ func articlesHandler(ctx *RequestContext) {
 			if nil == err {
 				v.ReplyCount = cnt
 			} else {
-				seelog.Errorf("Get article %v reply count error %v", v.Id, err)
+				log.Errorf("Get article %v reply count error %v", v.Id, err)
 			}
 		}
 	}

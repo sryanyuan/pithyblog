@@ -12,8 +12,8 @@ import (
 
 	"net"
 
-	"github.com/cihub/seelog"
 	"github.com/gorilla/mux"
+	"github.com/ngaut/log"
 )
 
 var layoutFiles = []string{
@@ -78,12 +78,12 @@ func (s *Site) NewAdmin() (string, error) {
 
 // Start start the http server
 func (s *Site) Start() error {
-	seelog.Info("Start with config ", s.config)
+	log.Info("Start with config ", s.config)
 	var err error
 
 	// In debug mode, auto initialize model
 	if err = s.Setup(s.config.Debug); nil != err {
-		seelog.Error(err)
+		log.Error(err)
 	}
 
 	// Update timezone
@@ -95,7 +95,7 @@ func (s *Site) Start() error {
 	// Get base meta info
 	metaInfoCreateSiteTimeStr, err := modelMetaInfoGet("create_site_time")
 	if nil != err {
-		seelog.Error("Failed to read meta info")
+		log.Error("Failed to read meta info")
 		return err
 	}
 	metaInfoCreateSiteTime, _ = strconv.ParseInt(metaInfoCreateSiteTimeStr, 10, 64)
@@ -119,7 +119,7 @@ func (s *Site) Start() error {
 	if nil != err {
 		return err
 	}
-	seelog.Info("Http server listen on:", s.config.ListenAddress)
+	log.Info("Http server listen on:", s.config.ListenAddress)
 
 	retChan := make(chan error, 1)
 	go func() {
@@ -135,11 +135,11 @@ func (s *Site) Start() error {
 	select {
 	case retErr = <-retChan:
 		{
-			seelog.Info("HTTP server quit with error:", retErr)
+			log.Info("HTTP server quit with error:", retErr)
 		}
 	case recvSig := <-sigCh:
 		{
-			seelog.Infof("Recv %v signal, shutting down ...", recvSig)
+			log.Infof("Recv %v signal, shutting down ...", recvSig)
 			ls.Close()
 			// Wait server routine quit
 			retErr = <-retChan

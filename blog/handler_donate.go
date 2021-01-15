@@ -11,8 +11,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/cihub/seelog"
 	"github.com/gorilla/mux"
+	"github.com/ngaut/log"
 )
 
 type DonateRsp struct {
@@ -211,7 +211,7 @@ func createDonateOrder(user string, num int, pm int, debug bool) (*orderCreateIn
 		return nil, errors.New(rsp.Msg)
 	}
 
-	seelog.Info(rsp.Msg)
+	log.Info(rsp.Msg)
 	var orderInfo orderCreateInfo
 	if err = json.Unmarshal([]byte(rsp.Msg), &orderInfo); nil != err {
 		return nil, err

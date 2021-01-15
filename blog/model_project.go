@@ -8,8 +8,8 @@ import (
 	"strconv"
 
 	"github.com/astaxie/beego/orm"
-	"github.com/cihub/seelog"
-	"github.com/satori/go.uuid"
+	"github.com/ngaut/log"
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/axgle/mahonia"
 )
@@ -163,7 +163,7 @@ func modelProjectCategoryAddReturnId(item *ProjectCategoryItem) (int64, error) {
 		if !exists {
 			err = os.Mkdir(categoryImagePath, 0777)
 			if nil != err {
-				seelog.Error(err)
+				log.Error(err)
 			}
 		}
 	}
@@ -234,13 +234,13 @@ func modelProjectCategoryRemove(id int) error {
 		articleImagePath := "./" + kPrefixImagePath + "/article-images/" + strconv.Itoa(id)
 		err = os.RemoveAll(articleImagePath)
 		if nil != err {
-			seelog.Error(err)
+			log.Error(err)
 		}
 
 		if len(categoryImagePath) != 0 {
 			err = os.RemoveAll(categoryImagePath)
 			if nil != err {
-				seelog.Error(err)
+				log.Error(err)
 			}
 		}
 	}
@@ -393,7 +393,7 @@ func modelProjectArticleNewArticle(article *ProjectArticleItem) (int64, error) {
 	articleImagePath := "./" + kPrefixImagePath + "/article-images/" + strconv.Itoa(article.ProjectId) + "/" + strconv.FormatInt(insertId, 10)
 	err = os.MkdirAll(articleImagePath, 0777)
 	if nil != err {
-		seelog.Error(err)
+		log.Error(err)
 	}
 
 	return insertId, nil
@@ -642,7 +642,7 @@ func modelProjectArticleDelete(articleId, projectId int) error {
 	articleImagePath := "./" + kPrefixImagePath + "/article-images/" + strconv.Itoa(projectId) + "/" + strconv.Itoa(articleId)
 	err = os.RemoveAll(articleImagePath)
 	if nil != err {
-		seelog.Error(err)
+		log.Error(err)
 	}
 
 	return nil

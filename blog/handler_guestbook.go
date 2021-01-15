@@ -3,8 +3,8 @@ package blog
 import (
 	"strconv"
 
-	"github.com/cihub/seelog"
 	"github.com/dchest/captcha"
+	"github.com/ngaut/log"
 )
 
 var guestbookRenderTpls = []string{
@@ -28,7 +28,7 @@ func guestbookHandler(ctx *RequestContext) {
 			return
 		}
 		if err = markMessageURLRead(ctx.user, messageID, ctx.r.URL.Path); nil != err {
-			seelog.Error(err)
+			log.Error(err)
 		} else {
 			modelMessageDelete(messageID)
 		}

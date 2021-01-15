@@ -5,8 +5,8 @@ import (
 	"encoding/hex"
 	"net/http"
 
-	"github.com/cihub/seelog"
 	"github.com/dchest/captcha"
+	"github.com/ngaut/log"
 )
 
 var signinRenderTpls = []string{
@@ -94,7 +94,7 @@ func signinHandler(ctx *RequestContext) {
 			result.Msg = url
 			result.Result = 0
 			ctx.RenderJson(&result)
-			seelog.Debug("User ", username, " login success")
+			log.Debug("User ", username, " login success")
 		}
 	}
 }

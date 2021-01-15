@@ -62,6 +62,29 @@ func adminHandler(ctx *RequestContext) {
 			}
 			ctx.RenderDownloadPage("成功", "文件已打包入:"+zipPath, "/download/"+filepath.Base(zipPath)+"?t=markdown_zip")
 		}
+	case "pack_sitedata":
+		{
+			//	need super admin privilige
+			if ctx.user.Permission < kPermission_SuperAdmin {
+				ctx.RenderMessagePage("错误", "access denied", false)
+				return
+			}
+
+			if configPath == "" {
+				ctx.RenderMessagePage("错误", "Config path is empty", false)
+				return
+			}
+
+			// Delete previous files
+			delDirFile("./sitedata-pack")
+			// Pack site data
+			fullName, err := packSitedata(filepath.Dir(configPath), "./sitedata-pack")
+			if nil != err {
+				ctx.RenderMessagePage("错误", err.Error(), false)
+				return
+			}
+			ctx.RenderDownloadPage("成功", "文件已打包入:"+fullName, "/download/"+filepath.Base(fullName)+"?t=sitedata")
+		}
 	case "clean_markdown":
 		{
 			err := delDirFile("./markdown-articles/")

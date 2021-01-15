@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/cihub/seelog"
+	"github.com/ngaut/log"
 )
 
 func init() {
@@ -29,7 +29,7 @@ func apiArchiveGet(ctx *RequestContext) {
 		if !ok {
 			plist = make([]*ProjectArticleItem, 0, 32)
 			rsp.Posts[tm] = plist
-			seelog.Info(tm)
+			log.Info(tm)
 		}
 		plist = append(plist, v)
 		rsp.Posts[tm] = plist

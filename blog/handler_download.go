@@ -1,13 +1,15 @@
 package blog
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 
-	"github.com/cihub/seelog"
 	"github.com/gorilla/mux"
+	"github.com/ngaut/log"
 )
 
 func downloadHandler(ctx *RequestContext) {
@@ -18,6 +20,33 @@ func downloadHandler(ctx *RequestContext) {
 	fileType = strings.ToLower(fileType)
 
 	switch fileType {
+	case "sitedata":
+		{
+			//	need super admin privilige
+			if ctx.user.Permission < kPermission_SuperAdmin {
+				ctx.RenderMessagePage("错误", "access denied", false)
+				return
+			}
+
+			if len(filename) == 0 {
+				ctx.RenderMessagePage("错误", "cannot find the file specific", false)
+				return
+			}
+
+			//	open file
+			downloadFilePath := filepath.Join("./sitedata-pack", filename)
+			f, err := os.Open(downloadFilePath)
+			if nil != err {
+				ctx.RenderMessagePage("错误",
+					fmt.Sprintf("cannot open the file (%s) specific: %v",
+						downloadFilePath, err.Error()), false)
+				return
+			}
+			defer f.Close()
+			content, _ := ioutil.ReadAll(f)
+			ctx.w.Header().Set("Content-Type", "application/zip")
+			ctx.w.Write(content)
+		}
 	case "markdown_zip":
 		{
 			//	need super admin privilige
@@ -67,7 +96,7 @@ func downloadHandler(ctx *RequestContext) {
 		}
 	default:
 		{
-			seelog.Debugf("Invalid file type %v", fileType)
+			log.Debugf("Invalid file type %v", fileType)
 			ctx.RenderMessagePage("错误", "无效的文件索引符", false)
 		}
 	}
