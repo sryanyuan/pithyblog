@@ -162,16 +162,6 @@ func projectArticleHandler(ctx *RequestContext) {
 		return
 	}
 
-	// Increase article visitors
-	remoteIP := ctx.GetRemoteIP()
-	if remoteIP == "" {
-		seelog.Error("Get ip from request failed")
-	} else {
-		if err = modelArticleVisitorInc(ctx.r.URL.Path, remoteIP); nil != err {
-			seelog.Error("Update article visitor failed:", err)
-		}
-	}
-
 	//	increase click count
 	if err = modelProjectArticleIncClick(articleID); nil != err {
 		return
