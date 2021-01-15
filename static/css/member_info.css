@@ -1,0 +1,14 @@
+#member-mood {
+	padding-left:5px;
+	padding-top:5px;
+}
+
+#member-baseinfo {
+	padding-bottom:20px;
+}
+
+.recent-article-title {
+	margin-bottom:3px;
+	padding-bottom:2px;
+	border-bottom:1px dotted #DDDDDD;
+}
