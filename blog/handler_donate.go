@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
 	"strconv"
 	"strings"
 	"sync"
@@ -54,6 +55,10 @@ func initDonateCall(addr string, secret string) {
 }
 
 func donateHander(ctx *RequestContext) {
+	ctx.w.WriteHeader(http.StatusNotFound)
+	ctx.w.Write([]byte("404 not found"))
+	return
+
 	ctx.r.ParseForm()
 	account := ctx.r.FormValue("account")
 	valueStr := ctx.r.FormValue("value")
